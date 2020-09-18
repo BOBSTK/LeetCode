@@ -1,14 +1,13 @@
 class Solution {
 public:
-    vector<vector<string>> res; //存储结果
-    vector<vector<string>> solveNQueens(int n) {
-       //vector<string> board(n,string(n,".")); //初始化空棋盘
-       vector<string> board(n, string(n, '.'));
+ vector<vector<string>> res; //存储结果
+    int totalNQueens(int n) {
+        vector<string> board(n, string(n, '.'));
        backtrack(board,0);
-       return res;
+       return res.size();
     }
 
-    // 路径：board 中小于 row 的那些行都已经成功放置了皇后
+     // 路径：board 中小于 row 的那些行都已经成功放置了皇后
     // 选择列表：第 row 行的所有列都是放置皇后的选择
     // 结束条件：row 超过 board 的最后一行
     void backtrack( vector<string> &board, int row){
@@ -49,5 +48,4 @@ public:
        }
        return true;
     }
-
 };

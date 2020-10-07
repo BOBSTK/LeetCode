@@ -1699,6 +1699,10 @@ int binarySearch(int[] nums, int target) {
 }
 ```
 
+> 二叉搜索树
+
+
+
 ### 6.1 搜索插入位置
 
 - LeetCode 35

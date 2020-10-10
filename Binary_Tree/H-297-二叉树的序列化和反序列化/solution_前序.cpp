@@ -7,35 +7,62 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
-
- static int NO_CAMERA = 0;  //没有摄像机，也没有被监控
- static int NO_NEED = 1;  //不需要相机
- static int HAS_CAMERA = 2 ; //有摄像机
-class Solution {
-
+class Codec {
 public:
-    int minCameraCover(TreeNode* root) {
-       int res = 0;
-       if(!root)
-         return 0;
-       if(dfs(root,res) == NO_CAMERA)
-         ++res;
-       return res;
+    
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        string ret ; //存储结果
+        if(!root)
+          return "#,";
+        dfs_s(root,ret); 
+        return ret;
     }
 
-    int dfs(TreeNode *node,int &res){
-        if(node == nullptr) //如果节点不存在=,则不需要监控
-         return 1;
-        if(!node->left && !node->right ) //如果是叶子节点，返回0，等待父节点监控
-         return NO_CAMERA;
-        int left,right; //判断左右儿子结点上是否有摄像头
-        left = dfs(node->left,res);
-        right = dfs(node->right,res);
-        if(left == 0 || right == 0){ //如果儿子节点没有被覆盖，则在这个节点上设置摄像头
-             ++res;
-             return HAS_CAMERA;
+    //前序遍历转化为字符串
+    void dfs_s(TreeNode* root,string &ret){
+        if(!root){
+            ret += "#,";
+            return;
         }
-        return left==HAS_CAMERA || right==HAS_CAMERA ? NO_NEED : NO_CAMERA; //此节点是否放置摄像头
+        ret += to_string(root->val) + ',';
+        dfs_s(root->left,ret);
+        dfs_s(root->right,ret);
     }
- 
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+       int i = 0; //索引
+       return dfs(data,i);
+    }
+
+     TreeNode* dfs(string& data,int &i){
+         if(i >= data.size())
+           return nullptr;
+         if(data[i] == '#'){
+             i += 2;
+             return nullptr;
+         }
+         int value = 0, sign = 1;
+         //判断符号
+         if(data[i] == '-'){
+             sign = -1;
+             ++i;
+         }
+         while(data[i]!=','){
+             value = value*10 + (data[i]-'0');
+             ++i;
+         }
+         ++i;
+         value *= sign;
+         TreeNode *root = new TreeNode(value);
+         root->left = dfs(data,i);  //左子树已经反序列化
+         root->right = dfs(data,i); //右子树已经反序列化
+         return root; //返回根节点
+    }
+
 };
+
+// Your Codec object will be instantiated and called as such:
+// Codec ser, deser;
+// TreeNode* ans = deser.deserialize(ser.serialize(root));

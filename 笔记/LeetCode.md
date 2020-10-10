@@ -704,7 +704,7 @@ public:
 
   - 如果两指针相遇，说明有环
 
-  - <img src="G:\重要文件\备份\数据结构\image-20200802113848230.png" alt="image-20200802113848230" style="zoom: 67%;" />
+  - <img src="E:\重要文件\重要文件\备份\数据结构\image-20200802113848230.png" alt="image-20200802113848230" style="zoom: 67%;" />
 
   - ```c++
     ListNode *detectCycle(ListNode *head) {

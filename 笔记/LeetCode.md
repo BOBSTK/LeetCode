@@ -2167,3 +2167,154 @@ for (int i = 1; i <= n; i++)
 
 - DFS
 - BFS
+
+## 10、其他算法
+
+### 10.1 Union-Find
+
+> 是什么
+
+- **并查集算法**
+- 解决图论中「**动态连通性**」问题
+
+> 数据结构
+
+- 根节点的父节点指向自己
+
+- 如果某两个节点被**连通**，则让其中的（任意）一个节点的根节点接到另一个节点的根节点上
+
+- 如果节点p和q连通的话，它们一定拥有**相同的根节点**
+
+  <img src="E:\Code\LeetCode\LeetCode\笔记\LeetCode\400479177833924a24f303131950b2b7775ab597.jpg" alt="img" style="zoom:50%;" />
+
+```c++
+class UF {
+    // 记录连通分量
+    private: int count;
+    // 节点 x 的节点是 parent[x]
+    vector<int> parent;
+
+    /* 构造函数，n 为图的节点总数 */
+    public: UF(int n) {
+        // 一开始互不连通
+        this->count = n;
+        // 父节点指针初始指向自己
+        parent = new vector<int>();
+        for (int i = 0; i < n; i++)
+            parent.push_back(i);
+    }
+
+    /* 其他函数 */
+}
+```
+
+```c++
+public void union(int p, int q) {
+    int rootP = find(p);
+    int rootQ = find(q);
+    if (rootP == rootQ)
+        return;
+    // 将两棵树合并为一棵
+    parent[rootP] = rootQ;
+    // parent[rootQ] = rootP 也一样
+    count--; // 两个分量合二为一
+}
+
+/* 返回某个节点 x 的根节点 */
+private int find(int x) {
+    // 根节点的 parent[x] == x
+    while (parent[x] != x)
+        x = parent[x];
+    return x;
+}
+
+/* 返回当前的连通分量个数 */
+public int count() { 
+    return count;
+}
+
+//判断两个结点是否相通
+public boolean connected(int p, int q) {
+    int rootP = find(p);
+    int rootQ = find(q);
+    return rootP == rootQ;
+}
+```
+
+
+
+> 复杂度分析
+
+- 主要是Find()
+
+  - O(logN)
+  - 极端情况下退化为链表O(N)
+
+  <img src="E:\Code\LeetCode\LeetCode\笔记\LeetCode\251dd20f0537e893162c48a4b86be9bfdafbc5a8.jpg" alt="img" style="zoom:50%;" />
+
+- 优化
+
+  - 小一些的树接到大一些的树下面
+
+  - 额外使用一个`size`数组，记录**每棵树包含的节点数**，我们不妨称为「**重量**」
+
+    `vector<int> size`
+
+  - 修改Union方法
+
+    ```c++
+    public void union(int p, int q) {
+        int rootP = find(p);
+        int rootQ = find(q);
+        if (rootP == rootQ)
+            return;
+    
+        // 小树接到大树下面，较平衡
+        if (size[rootP] > size[rootQ]) {
+            parent[rootQ] = rootP;
+            size[rootP] += size[rootQ];
+        } else {
+            parent[rootP] = rootQ;
+            size[rootQ] += size[rootP];
+        }
+        count--;
+    }
+    ```
+
+- 路径压缩
+
+  - 每次向树根遍历的同时，顺手将树高缩短
+
+  ```c++
+  private int find(int x) {
+      while (parent[x] != x) {
+          // 进行路径压缩
+          parent[x] = parent[parent[x]];
+          x = parent[x];
+      }
+      return x;
+  }
+  ```
+
+- 最终性能
+
+  - 初始化O(N)
+  - find connect count O(1)
+
+### 10.2 LRU
+
+- Least Recently Used
+
+> 数据结构分析
+
+- 显然 `cache` 中的元素必须有**时序**
+
+- 我们要在 `cache` 中快速找某个 `key` 是否已存在并得到对应的 `val`
+
+- 每次访问 `cache` 中的某个 `key`，需要将这个元素变为最近使用的
+
+- **哈希链表**，**双向链表**和**哈希表**的结合体
+
+  
+
+<img src="E:\Code\LeetCode\LeetCode\笔记\LeetCode\30af4fb8bfe13c9ffb55818ccb70cc57b6c0a508.jpg" alt="img" style="zoom:50%;" />
